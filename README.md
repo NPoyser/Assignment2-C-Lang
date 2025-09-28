@@ -32,3 +32,4 @@ And in main.c we would reuse our main.c from assignment 1.
 ## Test Results
 [Summary: 51/51 tests passed]
 Everything matches.
+Ps. It was said that there were 60 tests but I double checked, there are only 51.
