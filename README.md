@@ -4,7 +4,7 @@
 
 ## Author
 [NPoyser]
-(Privay for this being public)
+(Privacy for this being public)
 
 ## Description
  Advanced data representation functions for Owl Tech’s CPU design team
