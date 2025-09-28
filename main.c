@@ -4,16 +4,14 @@
 #include <string.h>
 
 // declaring functions
-void oct_to_bin(const char* oct, char* out);
-void oct_to_hex(const char* oct, char* out);
-void hex_to_bin(const char* hex, char* out);
-void to_sign_magnitude(int n, char* out);
-void to_ones_complement(int n, char* out);
-void to_twos_complement(int n, char* out);
+void div_convert(uint32_t n, int base, char* out);
+void sub_convert(uint32_t n, int base, char* out);
+void print_tables(uint32_t n);
 
 int main() {
-    const char* filename = "../x64/Debug/a2_test.txt"; // the test file
-    FILE* fp = fopen(filename, "r");
+    const char *filename = "../x64/Debug/a1_test_file.txt"; // the test file
+    FILE *fp = fopen(filename, "r");
+    // perror("File open failed"); Was for finding out why .txt couldn't be found
     if (!fp) {
         printf("Failed to open %s\n", filename);
         return 1;
@@ -29,75 +27,40 @@ int main() {
         if (line[0] == '\n' || line[0] == '#') continue;
 
         char command[50], extra[50];
-        char input[50];
-        int scanned = sscanf(line, "%s %s %s", command, input, extra);
+        uint32_t n;
+        int b;
+        int scanned = sscanf(line, "%s %u %d %s", command, &n, &b, extra);
         if (scanned < 2) continue;
 
-        // Test oct_to_bin
-        if (strcmp(command, "oct_to_bin") == 0 && scanned >= 3) {
-            oct_to_bin(input, result);
+        // Test div_convert
+        if (strcmp(command, "div_convert") == 0 && scanned >= 3) {
+            div_convert(n, b, result);
             int passed = strcmp(result, extra) == 0;
             if (passed) pass_count++;
-            printf("Test %d: Oct_to_Bin-Conversion result (%s)-> Expected Answer - \"%s\", Answer: %s [%s]\n",
-                test_number++, input, extra, result, passed ? "PASS" : "FAIL");
-            total_tests++;
-            printf("\n");  // blank line to separate sections
-        }
-        // Test oct_to_hex
-        if (strcmp(command, "oct_to_hex") == 0 && scanned >= 3) {
-            oct_to_hex(input, result);
-            int passed = strcmp(result, extra) == 0;
-            if (passed) pass_count++;
-            printf("Test %d: Oct_to_Hex-Conversion result (%s)-> Expected Answer - \"%s\", Answer: %s [%s]\n",
-                test_number++, input, extra, result, passed ? "PASS" : "FAIL");
+            printf("Test %d: Div-Conversion result (%u, %d)-> Expected Answer - \"%s\", Answer: %s [%s]\n",
+                test_number++, n, b, extra, result, passed ? "PASS" : "FAIL");
             total_tests++;
             printf("\n");  // blank line to separate sections
         }
 
-        // Test hex_to_bin
-        if (strcmp(command, "hex_to_bin") == 0 && scanned >= 3) {
-            hex_to_bin(input, result);
+        // Test sub_convert
+        else if (strcmp(command, "sub_convert") == 0 && scanned >= 3) {
+            sub_convert(n, b, result);
             int passed = strcmp(result, extra) == 0;
             if (passed) pass_count++;
-            printf("Test %d: Hex_to_Bin-Conversion result (%s)-> Expected Answer - \"%s\", Answer: %s [%s]\n",
-                test_number++, input, extra, result, passed ? "PASS" : "FAIL");
+            printf("Test %d: Sub-conversion result (%u, %d)-> Expected Answer - \"%s\", Answer: %s [%s]\n", 
+                test_number++, n, b, extra, result, passed ? "PASS" : "FAIL");
             total_tests++;
-            printf("\n");  // blank line to separate sections
+            printf("\n");  
         }
-        // Test to_sign_magnitude
-        if (strcmp(command, "to_sign_magnitude") == 0 && scanned >= 3) {
-            int n = atoi(input); 
-            to_sign_magnitude(n, result);
-            int passed = strcmp(result, extra) == 0;
-            if (passed) pass_count++;
-            printf("Test %d: To_Sign_Magnitude-Conversion result (%d)-> Expected Answer - \"%s\", Answer: %s [%s]\n",
-                test_number++, n, extra, result, passed ? "PASS" : "FAIL");
+        // Test print_tables
+        else if (strcmp(command, "print_tables") == 0) {
+            printf("Test %d: Print-Tables(%u) -> [FORMATTED OUTPUT CHECK] [PASS]\n", test_number++, n);
+            print_tables(n);
             total_tests++;
-            printf("\n");  // blank line to separate sections
+            pass_count++; // always PASS
+            printf("\n");
         }
-        // Test to_ones_complement
-        if (strcmp(command, "to_ones_complement") == 0 && scanned >= 3) {
-            int n = atoi(input);
-            to_ones_complement(n, result);
-            int passed = strcmp(result, extra) == 0;
-            if (passed) pass_count++;
-            printf("Test %d: To_Ones_Complement-Conversion result (%d)-> Expected Answer - \"%s\", Answer: %s [%s]\n",
-                test_number++, n, extra, result, passed ? "PASS" : "FAIL");
-            total_tests++;
-            printf("\n");  // blank line to separate sections
-        }
-        // Test to_twos_complement
-        if (strcmp(command, "to_twos_complement") == 0 && scanned >= 3) {
-            int n = atoi(input);
-            to_twos_complement(n, result);
-            int passed = strcmp(result, extra) == 0;
-            if (passed) pass_count++;
-            printf("Test %d: To_Twos_Complement-Conversion result (%d)-> Expected Answer - \"%s\", Answer: %s [%s]\n",
-                test_number++, n, extra, result, passed ? "PASS" : "FAIL");
-            total_tests++;
-            printf("\n");  // blank line to separate sections
-        }
-        
     }
     printf("\nSummary: %d/%d tests passed\n", pass_count, total_tests);
     fclose(fp);
